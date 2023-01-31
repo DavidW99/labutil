@@ -33,7 +33,7 @@ variable length equal "lx"
 print "Total energy (eV) = ${totenergy}"
 print "Number of atoms = ${natoms}"
 print "Lattice constant (Angstoms) = ${length}"
-        """
+"""
 
 def make_struc(alat):
     """
