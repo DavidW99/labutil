@@ -1,6 +1,11 @@
 import numpy, os
 import matplotlib.pyplot as plt
-from labutil.plugins.lammps import lammps_run, parse_lammps_rdf, parse_lammps_thermo, get_rdf
+from labutil.plugins.lammps import (
+    lammps_run,
+    parse_lammps_rdf,
+    parse_lammps_thermo,
+    get_rdf,
+)
 from labutil.objects import Struc, Dir, ase2struc, ClassicalPotential
 from ase.spacegroup import crystal
 from ase.build import make_supercell
@@ -13,7 +18,9 @@ def make_struc(size):
     :return: structure object converted from ase
     """
     alat = 4.10
-    unitcell = crystal('Al', [(0, 0, 0)], spacegroup=225, cellpar=[alat, alat, alat, 90, 90, 90])
+    unitcell = crystal(
+        "Al", [(0, 0, 0)], spacegroup=225, cellpar=[alat, alat, alat, 90, 90, 90]
+    )
     multiplier = numpy.identity(3) * size
     supercell = make_supercell(unitcell, multiplier)
     structure = Struc(ase2struc(supercell))
@@ -56,19 +63,26 @@ def compute_dynamics(size, timestep, nsteps, temperature):
     run $NSTEPS
     """
 
-    potential = ClassicalPotential(ptype='eam', element='Al', name='Al_zhou.eam.alloy')
-    runpath = Dir(path=os.path.join(os.environ['WORKDIR'], "Lab4/Problem1", "size_" + str(size)))
+    potential = ClassicalPotential(ptype="eam", element="Al", name="Al_zhou.eam.alloy")
+    runpath = Dir(
+        path=os.path.join(os.environ["WORKDIR"], "Lab4/Problem1", "size_" + str(size))
+    )
     struc = make_struc(size=size)
     inparam = {
-        'TEMPERATURE': temperature,
-        'NSTEPS': nsteps,
-        'TIMESTEP': timestep,
-        'TOUTPUT': 100,                 # how often to write thermo output
-        'TDAMP': 50 * timestep,       # thermostat damping time scale
-        'RDFFRAME': int(nsteps / 4),   # frames for radial distribution function
+        "TEMPERATURE": temperature,
+        "NSTEPS": nsteps,
+        "TIMESTEP": timestep,
+        "TOUTPUT": 100,  # how often to write thermo output
+        "TDAMP": 50 * timestep,  # thermostat damping time scale
+        "RDFFRAME": int(nsteps / 4),  # frames for radial distribution function
     }
-    outfile = lammps_run(struc=struc, runpath=runpath, potential=potential,
-                                  intemplate=intemplate, inparam=inparam)
+    outfile = lammps_run(
+        struc=struc,
+        runpath=runpath,
+        potential=potential,
+        intemplate=intemplate,
+        inparam=inparam,
+    )
     output = parse_lammps_thermo(outfile=outfile)
     rdffile = get_rdf(runpath=runpath)
     rdfs = parse_lammps_rdf(rdffile=rdffile)
@@ -76,11 +90,13 @@ def compute_dynamics(size, timestep, nsteps, temperature):
 
 
 def md_run():
-    output, rdfs = compute_dynamics(size=3, timestep=0.001, nsteps=1000, temperature=300)
+    output, rdfs = compute_dynamics(
+        size=3, timestep=0.001, nsteps=1000, temperature=300
+    )
     [simtime, pe, ke, energy, temp, press, dens, msd] = output
-    ## ------- plot output properties
-    #plt.plot(simtime, temp)
-    #plt.show()
+    # ------- plot output properties
+    # plt.plot(simtime, temp)
+    # plt.show()
     plt.plot(simtime, press)
     plt.show()
 
@@ -90,6 +106,6 @@ def md_run():
     plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # put here the function that you actually want to run
     md_run()

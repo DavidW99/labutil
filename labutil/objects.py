@@ -1,11 +1,13 @@
 import ase, json, os
 import labutil.util as util
 
+
 class Generic(object):
     """
     The basic class for a data object. it is defined by the attribute content which can be a number,
     string, list or a dict.
     """
+
     def __init__(self, *args, **kwargs):
         if args:
             # in case of a single literal or a dict being supplied
@@ -13,9 +15,9 @@ class Generic(object):
             self.content = args[0]
         if kwargs:
             # can supply content=dict, or an unpacked dict by keywords, but not both
-            if 'content' in kwargs:
+            if "content" in kwargs:
                 assert not args and len(kwargs) == 1, "wrong number of init kwargs"
-                self.content = kwargs['content']
+                self.content = kwargs["content"]
             else:
                 self.content = kwargs
 
@@ -24,27 +26,29 @@ class Generic(object):
 
 
 class Path(Generic):
-    """data class used to store OS path objects as a dict {'path': <path_string>} """
+    """data class used to store OS path objects as a dict {'path': <path_string>}"""
+
     @property
     def path(self):
-        return self.content['path']
+        return self.content["path"]
 
 
 class Dir(Path):
     """data class used to store OS directories"""
+
     pass
 
 
 class File(Path):
     """data class used to store OS files"""
+
     pass
 
 
 class TextFile(File):
-
     @property
     def text(self):
-        return self.content['text']
+        return self.content["text"]
 
     def write(self):
         util.write_file(fname=self.path, text=self.text)
@@ -52,11 +56,13 @@ class TextFile(File):
 
 class ExternalCode(File):
     """Class representing a binary code executable, such as LAMMPS or Quantum ESPRESSO"""
+
     pass
 
 
 class Param(Generic):
     """Class representing a dictionary of parameters"""
+
     pass
 
 
@@ -70,6 +76,7 @@ class Constraint(Param):
                       }
 
     """
+
     pass
 
 
@@ -85,6 +92,7 @@ class Struc(Param):
                                 ['He', [4.0, 5.0, 9.0]]],
                  }
     """
+
     @staticmethod
     def from_ase(aseobj):
         # need to use method tolist() of numpy arrays to get valid json
@@ -96,33 +104,40 @@ class Struc(Param):
         # easy way to get rid of tuples after zipping
         positions = json.loads(json.dumps(list(zip(symbols, positions))))
         types = sorted(list(set(zip(symbols, masses))))
-        species = {tp[0]: {'mass': tp[1], 'kind': i + 1} for i, tp in enumerate(types)}
-        content = {'cell': cell, 'positions': positions, 'periodicity': pbc, 'species': species}
+        species = {tp[0]: {"mass": tp[1], "kind": i + 1} for i, tp in enumerate(types)}
+        content = {
+            "cell": cell,
+            "positions": positions,
+            "periodicity": pbc,
+            "species": species,
+        }
         return content
 
     def to_ase(self):
-        cell = self.content['cell']
-        atoms = [ase.Atom(site[0], tuple(site[1])) for site in self.content['positions']]
+        cell = self.content["cell"]
+        atoms = [
+            ase.Atom(site[0], tuple(site[1])) for site in self.content["positions"]
+        ]
         aseobj = ase.Atoms(atoms)
         aseobj.set_cell(cell)
-        aseobj.set_pbc(self.content['periodicity'])
+        aseobj.set_pbc(self.content["periodicity"])
         return aseobj
 
     @property
     def symbols(self):
-        return [s[0] for s in self.content['positions']]
+        return [s[0] for s in self.content["positions"]]
 
     @property
     def cell(self):
-        return self.content['cell']
+        return self.content["cell"]
 
     @property
     def positions(self):
-        return self.content['positions']
+        return self.content["positions"]
 
     @property
     def n_atoms(self):
-        return len(self.content['positions'])
+        return len(self.content["positions"])
 
     @property
     def n_species(self):
@@ -130,7 +145,7 @@ class Struc(Param):
 
     @property
     def species(self):
-        return self.content['species']
+        return self.content["species"]
 
 
 class Kpoints(Param):
@@ -139,31 +154,36 @@ class Kpoints(Param):
     Example:
         kpts = {'option': 'automatic', 'gridsize': [2, 3, 3]}
     """
+
     pass
 
 
 class Potential(File):
     """Data class to store information about a Pseudo Potential file"""
+
     pass
 
 
 class PseudoPotential(Potential):
     """Data class to store information about a Pseudo Potential file"""
+
     def __init__(self, **kwargs):
-        if 'path' not in kwargs:
-            name = kwargs['name']
-            potpath = os.path.join(os.environ['QE_POTENTIALS'], name)
-            kwargs.update({'path': potpath})
+        if "path" not in kwargs:
+            name = kwargs["name"]
+            potpath = os.path.join(os.environ["QE_POTENTIALS"], name)
+            kwargs.update({"path": potpath})
         super().__init__(**kwargs)
 
 
 class ClassicalPotential(Potential):
-    """ Classical potential, e.g. EAM, Buckingham, OPLS etc """
+    """Classical potential, e.g. EAM, Buckingham, OPLS etc"""
+
     def __init__(self, **kwargs):
-        if 'path' not in kwargs:
-            potpath = os.path.join(os.environ['LAMMPS_POTENTIALS'], kwargs['name'])
-            kwargs.update({'path': potpath})
+        if "path" not in kwargs:
+            potpath = os.path.join(os.environ["LAMMPS_POTENTIALS"], kwargs["name"])
+            kwargs.update({"path": potpath})
         super().__init__(**kwargs)
+
     pass
 
 

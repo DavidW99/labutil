@@ -1,6 +1,11 @@
 import numpy, os
 import matplotlib.pyplot as plt
-from labutil.plugins.lammps import lammps_run, parse_lammps_rdf, parse_lammps_thermo, get_rdf
+from labutil.plugins.lammps import (
+    lammps_run,
+    parse_lammps_rdf,
+    parse_lammps_thermo,
+    get_rdf,
+)
 from labutil.objects import File, Struc, Dir, ase2struc, ClassicalPotential
 from ase.spacegroup import crystal
 from ase.build import make_supercell
@@ -51,6 +56,7 @@ intemplate = """
     unfix 4
 """
 
+
 def make_struc(size):
     """
     Creates the crystal structure using ASE.
@@ -59,8 +65,13 @@ def make_struc(size):
     """
     alat = 5.1
     lattice = alat * numpy.identity(3)
-    symbols = ['Ag', 'I', 'Ag', 'I']
-    sc_positions = [[1/2, 0, 1/4], [0, 0, 0], [1, 1/2, 3/4], [1/2, 1/2, 1/2]]   
+    symbols = ["Ag", "I", "Ag", "I"]
+    sc_positions = [
+        [1 / 2, 0, 1 / 4],
+        [0, 0, 0],
+        [1, 1 / 2, 3 / 4],
+        [1 / 2, 1 / 2, 1 / 2],
+    ]
     unitcell = Atoms(symbols=symbols, scaled_positions=sc_positions, cell=lattice)
     multiplier = numpy.identity(3) * size
     supercell = make_supercell(unitcell, multiplier)
@@ -74,24 +85,35 @@ def compute_AgI_dynamics(size, timestep, nsteps, temperature, ncpu):
     Return a pair of output file and RDF file written to the runpath directory.
     """
 
-    potential = ClassicalPotential(ptype='eam', element='Al', name='Al_zhou.eam.alloy')
-    runpath = Dir(path=os.path.join(os.environ['WORKDIR'], "Lab4/Problem2", "temp_" + str(temperature)))
+    potential = ClassicalPotential(ptype="eam", element="Al", name="Al_zhou.eam.alloy")
+    runpath = Dir(
+        path=os.path.join(
+            os.environ["WORKDIR"], "Lab4/Problem2", "temp_" + str(temperature)
+        )
+    )
     struc = make_struc(size=size)
     inparam = {
-        'TEMPERATURE': temperature,
-        'NSTEPS': nsteps,
-        'TIMESTEP': timestep,
-        'TOUTPUT': 100,                 # how often to write thermo output
-        'TDAMP': 50 * timestep,       # thermostat damping time scale
-        'RDFFRAME': int(nsteps / 4),   # frames for radial distribution function
+        "TEMPERATURE": temperature,
+        "NSTEPS": nsteps,
+        "TIMESTEP": timestep,
+        "TOUTPUT": 100,  # how often to write thermo output
+        "TDAMP": 50 * timestep,  # thermostat damping time scale
+        "RDFFRAME": int(nsteps / 4),  # frames for radial distribution function
     }
-    outfile = lammps_run(struc=struc, runpath=runpath, potential=potential,
-                                  intemplate=intemplate, inparam=inparam, ncpu=ncpu, triclinic=True)
+    outfile = lammps_run(
+        struc=struc,
+        runpath=runpath,
+        potential=potential,
+        intemplate=intemplate,
+        inparam=inparam,
+        ncpu=ncpu,
+        triclinic=True,
+    )
     output = parse_lammps_thermo(outfile=outfile)
 
-    rdfAgFile = File(path=os.path.join(runpath.path, 'lammps.rdf.Ag')) 
-    rdfIFile = File(path=os.path.join(runpath.path, 'lammps.rdf.I')) 
-    rdfAgIFile = File(path=os.path.join(runpath.path, 'lammps.rdf.AgI')) 
+    rdfAgFile = File(path=os.path.join(runpath.path, "lammps.rdf.Ag"))
+    rdfIFile = File(path=os.path.join(runpath.path, "lammps.rdf.I"))
+    rdfAgIFile = File(path=os.path.join(runpath.path, "lammps.rdf.AgI"))
 
     rdfsAg = parse_lammps_rdf(rdffile=rdfAgFile)
     rdfsI = parse_lammps_rdf(rdffile=rdfIFile)
@@ -101,7 +123,9 @@ def compute_AgI_dynamics(size, timestep, nsteps, temperature, ncpu):
 
 
 def md_run():
-    output, rdfsAg, rdfsI, rdfsAgI = compute_AgI_dynamics(size=1, timestep=0.001, nsteps=1000, temperature=300, ncpu=1)
+    output, rdfsAg, rdfsI, rdfsAgI = compute_AgI_dynamics(
+        size=1, timestep=0.001, nsteps=1000, temperature=300, ncpu=1
+    )
     [simtime, temp, etotal, press, dens, msdAg, msdI] = output
     ## ------- plot output properties
     plt.plot(simtime, temp)
@@ -113,6 +137,6 @@ def md_run():
     plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # put here the function that you actually want to run
     md_run()
