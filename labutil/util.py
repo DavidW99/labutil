@@ -1,13 +1,19 @@
-import os, subprocess
+import os, subprocess, sys
 
 
 def run_command(command):
-    return subprocess.run(
+    retcode = subprocess.run(
         command,
         shell=True,
         capture_output=True,
-        check=True,
     )
+    if retcode.returncode != 0:
+        if retcode.stdout is not None and len(retcode.stdout) > 0:
+            print(retcode.stdout.decode("ascii"), file=sys.stderr)
+        if retcode.stderr is not None and len(retcode.stderr) > 0:
+            print(retcode.stderr.decode("ascii"), file=sys.stderr)
+    retcode.check_returncode()
+    return retcode
 
 
 def write_file(fname, text):
