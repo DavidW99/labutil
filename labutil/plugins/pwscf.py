@@ -26,7 +26,7 @@ def qe_value_map(value):
             return ".true."
         else:
             return ".false."
-    elif isinstance(value, (float, numpy.float)) or isinstance(value, (int, numpy.int)):
+    elif isinstance(value, (float, numpy.floating, int, numpy.integer)):
         return str(value)
     elif isinstance(value, str):
         return "'{}'".format(value)
