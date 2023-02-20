@@ -48,7 +48,7 @@ def compute_energy(alat, nk, ecut, displ=0):
     constraint = Constraint(atoms={"0": [0, 0, 0], "1": [0, 0, 0]})
     kpts = Kpoints(gridsize=[nk, nk, nk], option="automatic", offset=True)
     dirname = "PbTiO3_a_{}_ecut_{}_nk_{}_displ_{}".format(alat, ecut, nk, displ)
-    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab3/Problem2", dirname))
+    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab4/Problem2", dirname))
     input_params = PWscf_inparam(
         {
             "CONTROL": {

@@ -40,7 +40,7 @@ def compute_energy(alat, nk, ecut):
     }
     struc = make_struc(alat=alat)
     kpts = Kpoints(gridsize=[nk, nk, nk], option="automatic", offset=False)
-    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab2/Problem1", str(alat)))
+    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab3/Problem1", str(alat)))
     input_params = PWscf_inparam(
         {
             "CONTROL": {

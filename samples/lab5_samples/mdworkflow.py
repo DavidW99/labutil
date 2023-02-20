@@ -65,7 +65,7 @@ def compute_dynamics(size, timestep, nsteps, temperature):
 
     potential = ClassicalPotential(ptype="eam", element="Al", name="Al_zhou.eam.alloy")
     runpath = Dir(
-        path=os.path.join(os.environ["WORKDIR"], "Lab4/Problem1", "size_" + str(size))
+        path=os.path.join(os.environ["WORKDIR"], "Lab5/Problem1", "size_" + str(size))
     )
     struc = make_struc(size=size)
     inparam = {

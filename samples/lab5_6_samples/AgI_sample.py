@@ -21,7 +21,7 @@ intemplate = """
     read_data $DATAINPUT 
 
     pair_style mff
-    pair_coeff * * /home/bond/Work/Lab4/AgI_FF.txt 47 53 yes yes
+    pair_coeff * * /home/bond/Work/Lab5/AgI_FF.txt 47 53 yes yes
 
     velocity all create $TEMPERATURE 126342 dist gaussian rot yes mom yes
 
@@ -88,7 +88,7 @@ def compute_AgI_dynamics(size, timestep, nsteps, temperature, ncpu):
     potential = ClassicalPotential(ptype="eam", element="Al", name="Al_zhou.eam.alloy")
     runpath = Dir(
         path=os.path.join(
-            os.environ["WORKDIR"], "Lab4/Problem2", "temp_" + str(temperature)
+            os.environ["WORKDIR"], "Lab5/Problem2", "temp_" + str(temperature)
         )
     )
     struc = make_struc(size=size)

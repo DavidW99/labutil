@@ -40,7 +40,7 @@ def compute_energy(alat, nk, ecut):
     struc = make_struc(alat=alat)
     kpts = Kpoints(gridsize=[nk, nk, nk], option="automatic", offset=False)
     dirname = "Fe_a_{}_ecut_{}_nk_{}".format(alat, ecut, nk)
-    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab3/Problem1", dirname))
+    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab4/Problem1", dirname))
     input_params = PWscf_inparam(
         {
             "CONTROL": {
@@ -99,7 +99,7 @@ def compute_energy_anti(alat, nk, ecut):
     struc = make_struc(alat=alat)
     kpts = Kpoints(gridsize=[nk, nk, nk], option="automatic", offset=False)
     dirname = "Fe_a_{}_ecut_{}_nk_{}".format(alat, ecut, nk)
-    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab3/Problem1", dirname))
+    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab4/Problem1", dirname))
     input_params = PWscf_inparam(
         {
             "CONTROL": {

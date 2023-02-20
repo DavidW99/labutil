@@ -2,7 +2,7 @@
     tstress = .true.
     tprnfor = .true.
     pseudo_dir = '/home/bond/Software/qe-6.4.1/pseudo'
-    outdir = '/home/bond/Work/Lab2/test'
+    outdir = '/home/bond/Work/Lab3/test'
     calculation = 'scf'
 /
 &SYSTEM

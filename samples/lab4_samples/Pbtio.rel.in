@@ -4,7 +4,7 @@
     disk_io = 'none'
     tstress = .true.
     tprnfor = .true.
-    outdir = '/home/bond/Work/Lab3/Problem2'
+    outdir = '/home/bond/Work/Lab4/Problem2'
 / 
 &SYSTEM
     nat = 5
