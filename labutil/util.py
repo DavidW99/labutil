@@ -11,7 +11,7 @@ def run_command(command):
         print(
             f"=== Execution of command failed with returncode {retcode.returncode} ==="
         )
-        print("Command:  {command}")
+        print(f"Command:  {command}")
         if retcode.stdout is not None and len(retcode.stdout) > 0:
             print("== stdout from command ==")
             print(retcode.stdout.decode("ascii"), file=sys.stderr)
