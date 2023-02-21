@@ -71,21 +71,23 @@ def make_calculator(nk: int, ecut: float) -> Espresso:
         # ASE has a special option for setting up the k-point mesh:
         # (See https://wiki.fysik.dtu.dk/ase/ase/calculators/espresso.html#parameters)
         kpts=(nk, nk, nk),
-        # All other options to QE can be transparently specified in `input_data`,
+        # Note also that options related to input and output, such as
+        # `outdir`, which we set in the labutil version of this example,
+        # are not set: ASE handles input and output management automatically
+        # as part of the calculator. Instead, we just tell ASE where we want it to run:
+        directory=os.environ["WORKDIR"] + "/Lab3/Problem1/",
+        # You can change this ^ on the calculator later (`calc.directory = "/something/somewhere/"`) if you want to.
+        # !!! If something goes wrong, you can look at `espresso.pwo` in `directory` to see the output of QE !!!
+        #
+        # Finally, all other options to QE can be transparently specified in `input_data`,
         # just as they would be in the QE input file. From the ASE docs:
         #
         #     All parameters must be given in QE units, usually Ry or atomic units in line
         #     with the documentation. ASE does not add any defaults over the defaults of QE.
         #     Parameters can be given as keywords and the calculator will put them into the
-        #     correct section of the input file. The calculator also accepts a keyword argument
-        #     input_data which is a dict, parameters may be put into sections in input_data, but
-        #     it is not necessary:
+        #     correct section of the input file.
         #
         # Note that capital letters in the section names are not needed.
-        # Note also that options related to input and output, such as
-        # `outdir`, which we set in the labutil version of this example,
-        # are not set: ASE handles input and output management automatically
-        # as part of the calculator.
         input_data={
             "control": {
                 "tstress": True,
