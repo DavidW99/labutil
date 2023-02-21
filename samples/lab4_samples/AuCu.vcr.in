@@ -2,7 +2,7 @@
     calculation = 'vc-relax'
     tprnfor = .true.
     tstress = .true.
-    pseudo_dir = '/home/bond/Software/qe-6.4.1/pseudo'
+    pseudo_dir = '/home/bond/Software/qe-7.1/pseudo'
     outdir = '/home/bond/Work/Lab4/Problem3'
     disk_io = 'none'
 / 
