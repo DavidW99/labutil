@@ -65,7 +65,7 @@ def make_calculator(nk: int, ecut: float) -> Espresso:
 
     return Espresso(
         # Specify, using this special options for ASE, which pseudopotentials to use for each kind of atom:
-        pseudopotentials={"Ge": "Ge.pz-bhs.UPF"},
+        pseudopotentials={"Ge": "ge_lda_v1.4.uspp.F.UPF"},
         # Tell ASE where to tell QE to find pseudopotentials:
         pseudo_dir=os.environ["QE_POTENTIALS"],
         # ASE has a special option for setting up the k-point mesh:
@@ -75,7 +75,7 @@ def make_calculator(nk: int, ecut: float) -> Espresso:
         # `outdir`, which we set in the labutil version of this example,
         # are not set: ASE handles input and output management automatically
         # as part of the calculator. Instead, we just tell ASE where we want it to run:
-        directory=os.environ["WORKDIR"] + "/Lab3/Problem1/",
+        directory=os.environ["WORKDIR"] + "/Lab3/test/",
         # You can change this ^ on the calculator later (`calc.directory = "/something/somewhere/"`) if you want to.
         # !!! If something goes wrong, you can look at `espresso.pwo` in `directory` to see the output of QE !!!
         #

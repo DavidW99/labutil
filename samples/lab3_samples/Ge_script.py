@@ -30,7 +30,7 @@ def compute_energy(alat, nk, ecut):
     """
     Make an input template and select potential and structure, and the path where to run
     """
-    potname = "Ge.pz-bhs.UPF"
+    potname = "ge_lda_v1.4.uspp.F.UPF"
     pseudopath = os.environ["QE_POTENTIALS"]
     potpath = os.path.join(pseudopath, potname)
     pseudopots = {
@@ -40,7 +40,7 @@ def compute_energy(alat, nk, ecut):
     }
     struc = make_struc(alat=alat)
     kpts = Kpoints(gridsize=[nk, nk, nk], option="automatic", offset=False)
-    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab3/Problem1", str(alat)))
+    runpath = Dir(path=os.path.join(os.environ["WORKDIR"], "Lab3/test", str(alat)))
     input_params = PWscf_inparam(
         {
             "CONTROL": {
