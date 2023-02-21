@@ -8,10 +8,18 @@ def run_command(command):
         capture_output=True,
     )
     if retcode.returncode != 0:
+        print(
+            f"=== Execution of command failed with returncode {retcode.returncode} ==="
+        )
+        print("Command:  {command}")
         if retcode.stdout is not None and len(retcode.stdout) > 0:
+            print("== stdout from command ==")
             print(retcode.stdout.decode("ascii"), file=sys.stderr)
+            print("== end stdout from command ==")
         if retcode.stderr is not None and len(retcode.stderr) > 0:
+            print("== stderr from command ==")
             print(retcode.stderr.decode("ascii"), file=sys.stderr)
+            print("== end stderr from command ==")
     retcode.check_returncode()
     return retcode
 

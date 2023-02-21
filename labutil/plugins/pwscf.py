@@ -102,8 +102,15 @@ def run_qe_pwscf(
         constraint=constraint,
     )
     outfile = File({"path": os.path.join(runpath.path, "pwscf.out")})
-    pwscf_command = "mpirun -np {} {} -nk {} < {} > {}".format(
-        ncpu, pwscf_code.path, nkpool, infile.path, outfile.path
+    # `run_command` will helpfully print stdout/err if something fails, but
+    # to do that we need the QE output to go to stderr/out in addition to the log
+    # so we use `tee`. But we also need the failure of QE to propagate to the final
+    # returncode, so we need pipefail, but /bin/sh doesn't have that, so we also
+    # need to run in bash:
+    pwscf_command = (
+        'bash -c "set -eo pipefail; mpirun -np {} {} -nk {} < {} | tee {}"'.format(
+            ncpu, pwscf_code.path, nkpool, infile.path, outfile.path
+        )
     )
     run_command(pwscf_command)
     return outfile
@@ -120,5 +127,10 @@ def parse_qe_pwscf_output(outfile):
                 total_energy = float(line.split()[-2]) * 13.605698066
             if line.lower().startswith("          total   stress"):
                 pressure = float(line.split()[-1])
-    result = {"energy": total_energy, "force": total_force, "pressure": pressure}
+    result = {
+        "energy": total_energy,
+        "force": total_force,
+        "pressure": pressure,
+        "walltime": walltime,
+    }
     return result
