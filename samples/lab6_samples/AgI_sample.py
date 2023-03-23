@@ -40,7 +40,7 @@ intemplate = """
     variable rdfAgIFile string "$RDFFILE.AgI"
 
     thermo_style custom step temp etotal press density c_msdAg[4] c_msdI[4]
-    thermo $TOUTPUT 
+    thermo $TOUTPUT
 
     # record rdf
     fix 1 all ave/time 1 $RDFFRAME $RDFFRAME c_rdfAg[*] file ${rdfAgFile} mode vector

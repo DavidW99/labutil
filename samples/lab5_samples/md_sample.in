@@ -7,7 +7,7 @@
     read_data /home/bond/WORK/Lab5/Problem1/size_3/lammps.data
 
     pair_style eam/alloy
-    pair_coeff * * /home/bond/Software/lammps-17Nov16/potentials/Al_zhou.eam.alloy  Al
+    pair_coeff * * /home/bond/Software/lammps/lammps/potentials/Al_zhou.eam.alloy  Al
 
     velocity  all create 300 87287 dist gaussian
 
