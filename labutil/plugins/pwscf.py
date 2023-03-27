@@ -87,6 +87,26 @@ def write_pwscf_input(runpath, params, struc, kpoints, pseudopots, constraint=No
     infile.write()
     return infile
 
+def write_sbatch(runpath, ncpu=8):
+    """Write the sbatch file"""
+    sbatchtxt = f"""\
+#!/bin/bash
+#SBATCH --job-name=qe
+#SBATCH -N 1 # Number of nodes requested
+#SBATCH -n {ncpu} # Number of cores requested
+#SBATCH -t 00-08:00 # Runtime in minutes
+#SBATCH -p test # Partition to submit to kozinsky
+#SBATCH --mem-per-cpu=3000 # Memory per cpu in MB (see also--mem) 3800 5000
+
+module load intel/17.0.4-fasrc01 intel-mkl/2017.2.174-fasrc01 impi/2017.2.174-fasrc01
+module list
+
+mpirun -np $SLURM_NTASKS $QE_PW_COMMAND < pwscf.in """
+    sbatchfile = TextFile(path=os.path.join(runpath.path, "bat_qe.sh"), text=sbatchtxt)
+    sbatchfile.write()
+    # run sbatch
+    os.system(f"cd {runpath.path}; sbatch bat_qe.sh")
+    return 
 
 def run_qe_pwscf(
     struc, runpath, pseudopots, params, kpoints, constraint=None, ncpu=1, nkpool=1
@@ -101,18 +121,19 @@ def run_qe_pwscf(
         pseudopots=pseudopots,
         constraint=constraint,
     )
+    write_sbatch(runpath)
     outfile = File({"path": os.path.join(runpath.path, "pwscf.out")})
     # `run_command` will helpfully print stdout/err if something fails, but
     # to do that we need the QE output to go to stderr/out in addition to the log
     # so we use `tee`. But we also need the failure of QE to propagate to the final
     # returncode, so we need pipefail, but /bin/sh doesn't have that, so we also
     # need to run in bash:
-    pwscf_command = (
-        'bash -c "set -eo pipefail; mpirun -np {} {} -nk {} < {} | tee {}"'.format(
-            ncpu, pwscf_code.path, nkpool, infile.path, outfile.path
-        )
-    )
-    run_command(pwscf_command)
+    # pwscf_command = (
+    #     'bash -c "set -eo pipefail; mpirun -np {} {} -nk {} < {} | tee {}"'.format(
+    #         ncpu, pwscf_code.path, nkpool, infile.path, outfile.path
+    #     )
+    # )
+    # run_command(pwscf_command)
     return outfile
 
 
