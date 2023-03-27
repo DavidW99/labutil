@@ -104,10 +104,10 @@ def parse_lammps_thermo(outfile):
         read_temp = False
         output = []
         for line in fout:
-            if not read_temp and line.startswith("Step"):
+            if not read_temp and line.lstrip().startswith("Step"):
                 read_temp = True
                 continue
-            if read_temp and line.startswith("Loop"):
+            if read_temp and line.lstrip().startswith("Loop"):
                 read_temp = False
                 continue
             if read_temp:
